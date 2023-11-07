@@ -2,12 +2,11 @@ package org.hellokicktty.server.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
-@Setter
+@NoArgsConstructor
 public class Kickboard {
     @Id
     Long id;
@@ -15,4 +14,11 @@ public class Kickboard {
     Double lon;
     Integer clusterNumber;
     Boolean isDanger;
+
+    @Builder
+    public Kickboard(Long id, Double lat, Double lon) {
+        this.id = id;
+        this.lat = lat;
+        this.lon = lon;
+    }
 }
