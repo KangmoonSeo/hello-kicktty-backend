@@ -1,20 +1,17 @@
 package org.hellokicktty.server.config;
 
 import jakarta.persistence.EntityManager;
-import org.hellokicktty.server.repository.JpaKickboardRepository;
-import org.hellokicktty.server.repository.KickboardRepository;
-import org.hellokicktty.server.repository.MemoryKickboardRepository;
+import lombok.RequiredArgsConstructor;
+import org.hellokicktty.server.repository.*;
 import org.hellokicktty.server.service.KickboardService;
+import org.hellokicktty.server.service.LayerService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@RequiredArgsConstructor
 @Configuration
 public class SpringConfig {
     private final EntityManager em;
-
-    public SpringConfig(EntityManager em) {
-        this.em = em;
-    }
 
     @Bean
     public KickboardService kickboardService() {
@@ -23,8 +20,17 @@ public class SpringConfig {
 
     @Bean
     public KickboardRepository kickboardRepository() {
-
-        //    return new MemoryKickboardRepository();
         return new JpaKickboardRepository(em);
+        //    return new MemoryKickboardRepository();
+    }
+
+    @Bean
+    public LayerService layerService() {
+        return new LayerService(layerRepository());
+    }
+
+    @Bean
+    public LayerRepository layerRepository() {
+        return new JpaLayerRepository(em);
     }
 }

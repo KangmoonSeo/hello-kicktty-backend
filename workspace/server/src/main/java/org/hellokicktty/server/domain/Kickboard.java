@@ -12,15 +12,13 @@ public class Kickboard {
     Long id;
     Double lat;
     Double lng;
-    Integer clusterNumber;
-    Boolean danger;
+    final Integer clusterNumber = -1;
+    final Boolean danger = false;
 
     @Builder
-    public Kickboard(Long id, Double lat, Double lng) {
+    protected Kickboard(Long id, Double lat, Double lng) {
         this.id = id;
         this.lat = lat;
         this.lng = lng;
-        clusterNumber = -1;
-        danger = false;
     }
 }

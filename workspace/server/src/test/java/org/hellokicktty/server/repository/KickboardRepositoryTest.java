@@ -23,7 +23,7 @@ class KickboardRepositoryTest {
         Long kickId = 1002L;
         Kickboard kickboard = Kickboard.builder()
                 .id(kickId)
-                .lon(102.0)
+                .lng(102.0)
                 .lat(120.0)
                 .build();
 

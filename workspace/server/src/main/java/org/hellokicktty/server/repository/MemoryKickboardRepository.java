@@ -1,15 +1,9 @@
 package org.hellokicktty.server.repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import org.hellokicktty.server.domain.Kickboard;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MemoryKickboardRepository implements KickboardRepository {
 
@@ -39,19 +33,19 @@ public class MemoryKickboardRepository implements KickboardRepository {
         return kickboardList;
     }
 
-    public List<Kickboard> findKickboardsInRange(Double lat, Double lng, Double length) {
+    public List<Kickboard> findAllInRange(Double lat, Double lng, Double radius) {
         List<Kickboard> kickboardsInRange = new ArrayList<>();
 
         for (Kickboard kickboard : kickboardList) {
-            if (kickboard.getLat() >= (lat - length / 2) &&
-                    kickboard.getLat() <= (lat + length / 2) &&
-                    kickboard.getLng() >= (lng - length / 2) &&
-                    kickboard.getLng() <= (lng + length / 2)) {
+            if ((kickboard.getLat() - lat) * (kickboard.getLat() - lat)
+                    + (kickboard.getLng() - lng) * (kickboard.getLng() - lng)
+                    < radius * radius) {
                 kickboardsInRange.add(kickboard);
             }
         }
         return kickboardsInRange;
     }
-
-
 }
+
+
+

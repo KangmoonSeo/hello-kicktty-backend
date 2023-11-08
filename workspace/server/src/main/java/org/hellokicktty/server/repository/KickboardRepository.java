@@ -12,7 +12,7 @@ public interface KickboardRepository {
 
     public Kickboard findById(Long id);
 
-    public List<Kickboard> findKickboardsInRange(Double lat, Double lng, Double length);
+    public List<Kickboard> findAllInRange(Double lat, Double lng, Double radius);
 
     public List<Kickboard> findAll();
 }
