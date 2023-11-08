@@ -1,54 +1,18 @@
 package org.hellokicktty.server.repository;
 
-import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
 import org.hellokicktty.server.domain.Kickboard;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Repository
-@RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class KickboardRepository {
-    private final EntityManager em;
+public interface KickboardRepository {
 
-    @Transactional
-    public Long save(Kickboard kickboard) {
-        if (kickboard.getId() == null) {
-            em.persist(kickboard);
-        } else {
-            em.merge(kickboard);
-        }
-        return kickboard.getId();
-    }
+    public Long save(Kickboard kickboard);
 
-    @Transactional
-    public void remove(Kickboard kickboard) {
-        em.remove(kickboard);
-    }
+    public void remove(Kickboard kickboard);
 
+    public Kickboard findById(Long id);
 
-    public Kickboard findById(Long id) {
-        return em.find(Kickboard.class, id);
-    }
+    public List<Kickboard> findKickboardsInRange(Double lat, Double lng, Double length);
 
-    public List<Kickboard> findAll() {
-        return em.createQuery("SELECT k FROM Kickboard k", Kickboard.class)
-                .getResultList();
-    }
-
-    public List<Kickboard> findKickboardsInRange(double lat, double lon, double length) {
-        return em.createQuery("SELECT k FROM Kickboard k " +
-                        "WHERE k.lat BETWEEN :minLat AND :maxLat " +
-                        "AND k.lon BETWEEN :minLon AND :maxLon", Kickboard.class)
-                .setParameter("minLat", lat - length / 2)
-                .setParameter("maxLat", lat + length / 2)
-                .setParameter("minLon", lon - length / 2)
-                .setParameter("maxLon", lon + length / 2)
-                .getResultList();
-    }
-
-
+    public List<Kickboard> findAll();
 }
