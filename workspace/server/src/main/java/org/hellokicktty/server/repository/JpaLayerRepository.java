@@ -2,7 +2,6 @@ package org.hellokicktty.server.repository;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.hellokicktty.server.domain.Kickboard;
 import org.hellokicktty.server.domain.RestrictLayer;
 import org.hellokicktty.server.domain.SpareLayer;
 

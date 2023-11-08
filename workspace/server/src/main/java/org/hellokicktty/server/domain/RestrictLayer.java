@@ -11,5 +11,4 @@ public class RestrictLayer {
     Long id;
     Double lat;
     Double lng;
-
 }

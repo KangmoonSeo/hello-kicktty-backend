@@ -20,8 +20,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KickboardService {
 
-    Logger log = LoggerFactory.getLogger(Logger.class);
     private final KickboardRepository kickboardRepository;
+    Logger log = LoggerFactory.getLogger(Logger.class);
     private final double FIND_RANGE = 0.05;
     private final String URL = "http://localhost:8081/cluster"; // AI Server Request End-Point
 
@@ -39,15 +39,19 @@ public class KickboardService {
         kickboardRepository.save(kickboard);
 
         requestCluster(kickboard.getLat(), kickboard.getLng());
+        log.info("kickboard {} added", kickboard.getId());
+
     }
 
     public void removeKickboard(Long id) {
         Kickboard kickboard = kickboardRepository.findById(id);
         if (kickboard == null) {
-
+            log.info("void kickboard removal called");
+            return;
         }
-        kickboardRepository.remove(kickboard);
 
+        kickboardRepository.remove(kickboard);
+        log.info("kickboard {} removed", id);
         requestCluster(kickboard.getLat(), kickboard.getLng());
     }
 

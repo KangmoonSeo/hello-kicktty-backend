@@ -17,14 +17,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LayerService {
 
-    Logger log = LoggerFactory.getLogger(Logger.class);
     private final LayerRepository layerRepository;
+    Logger log = LoggerFactory.getLogger(Logger.class);
 
     @PostConstruct
     void init() {
         // something happens ...
     }
 
+    // group by id, List<{id, lat, lon}> -> List<{id, List<{lat, lon}>}>
     public List<Layer> groupRestrictLayers() {
         List<Layer> groupedLayers = new ArrayList<>();
         layerRepository

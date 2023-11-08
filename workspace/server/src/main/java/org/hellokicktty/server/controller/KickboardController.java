@@ -39,7 +39,6 @@ public class KickboardController {
 
     @DeleteMapping("/{id}")
     void removeKickboard(@PathVariable Long id) {
-        if (kickboardService.findKickboard(id) == null) return;
         kickboardService.removeKickboard(id);
     }
 
