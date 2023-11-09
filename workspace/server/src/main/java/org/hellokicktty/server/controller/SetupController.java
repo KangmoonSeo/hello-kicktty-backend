@@ -12,13 +12,9 @@ public class SetupController {
 
     private final LayerService layerService;
 
-    @GetMapping("/setup")
+    // @GetMapping("/setup")
     SetupResponseDto getLayers() {
-        SetupResponseDto dto = new SetupResponseDto(
-                layerService.groupRestrictLayers(),
-                layerService.groupSpareLayers()
-        );
-        return dto;
+        return new SetupResponseDto(layerService.groupRestrictLayers(), layerService.groupSpareLayers());
     }
 
 }

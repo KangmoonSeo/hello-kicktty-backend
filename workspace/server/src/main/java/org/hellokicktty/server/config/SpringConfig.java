@@ -20,8 +20,8 @@ public class SpringConfig {
 
     @Bean
     public KickboardRepository kickboardRepository() {
-        return new JpaKickboardRepository(em);
-        //    return new MemoryKickboardRepository();
+        // return new JpaKickboardRepository(em);
+        return new MemoryKickboardRepository();
     }
 
     @Bean

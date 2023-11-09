@@ -34,11 +34,9 @@ public class LayerService {
                 .collect(Collectors
                         .groupingBy(
                                 RestrictLayer::getId,
-                                Collectors
-                                        .mapping(l -> new Coordinate(l.getLat(), l.getLng()), Collectors.toList())))
+                                Collectors.mapping(l -> new Coordinate(l.getLat(), l.getLng()), Collectors.toList())))
                 .forEach((id, coordinates) -> {
-                    Layer layer = new Layer(id, coordinates);
-                    groupedLayers.add(layer);
+                    groupedLayers.add(new Layer(id, coordinates));
                 });
 
         log.info("{} restrict layers called", groupedLayers.size());
@@ -54,11 +52,9 @@ public class LayerService {
                         Collectors
                                 .groupingBy(
                                         SpareLayer::getId,
-                                        Collectors
-                                                .mapping(l -> new Coordinate(l.getLat(), l.getLng()), Collectors.toList())))
+                                        Collectors.mapping(l -> new Coordinate(l.getLat(), l.getLng()), Collectors.toList())))
                 .forEach((id, coordinates) -> {
-                    Layer layer = new Layer(id, coordinates);
-                    groupedLayers.add(layer);
+                    groupedLayers.add(new Layer(id, coordinates));
                 });
 
         log.info("{} spare layers called", groupedLayers.size());
