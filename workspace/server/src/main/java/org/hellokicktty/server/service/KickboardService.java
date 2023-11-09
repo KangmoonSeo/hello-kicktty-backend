@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 @RequiredArgsConstructor
 public class KickboardService {
 
@@ -30,7 +32,13 @@ public class KickboardService {
         addDummyKickboards();
     }
 
-    public void addKickboard(Long id, Double lat, Double lng) {
+    public Kickboard addKickboard(Long id, Double lat, Double lng) {
+
+        if (kickboardRepository.findById(id) != null) {
+            log.info("duplicate kickboard {} addition called", id);
+            return new Kickboard();
+        }
+
         Kickboard kickboard = Kickboard.builder()
                 .id(id)
                 .lat(lat)
@@ -40,13 +48,14 @@ public class KickboardService {
 
         requestCluster(kickboard.getLat(), kickboard.getLng());
         log.info("kickboard {} added", kickboard.getId());
+        return kickboard;
 
     }
 
     public void removeKickboard(Long id) {
         Kickboard kickboard = kickboardRepository.findById(id);
         if (kickboard == null) {
-            log.info("void kickboard removal called");
+            log.info("void kickboard {} removal called", id);
             return;
         }
 
@@ -67,6 +76,7 @@ public class KickboardService {
 
 
     private void requestCluster(double lat, double lng) {
+
         final WebClient webClient = WebClient.create();
         HashMap<String, Double> requestBody = new HashMap<>();
         requestBody.put("lat", lat);

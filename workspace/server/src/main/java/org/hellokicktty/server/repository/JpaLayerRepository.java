@@ -4,9 +4,13 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.hellokicktty.server.domain.RestrictLayer;
 import org.hellokicktty.server.domain.SpareLayer;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
+@Repository
 @RequiredArgsConstructor
 public class JpaLayerRepository implements LayerRepository {
     private final EntityManager em;

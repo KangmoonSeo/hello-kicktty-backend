@@ -1,6 +1,7 @@
 package org.hellokicktty.server.repository;
 
 import org.hellokicktty.server.domain.Kickboard;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;

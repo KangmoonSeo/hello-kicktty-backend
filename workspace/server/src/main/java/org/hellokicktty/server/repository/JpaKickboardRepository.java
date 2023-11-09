@@ -3,12 +3,14 @@ package org.hellokicktty.server.repository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.hellokicktty.server.domain.Kickboard;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Repository
 public class JpaKickboardRepository implements KickboardRepository {
     private final EntityManager em;
 

@@ -6,7 +6,6 @@ import lombok.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
 public class Kickboard {
     @Id
     Long id;
@@ -20,5 +19,11 @@ public class Kickboard {
         this.id = id;
         this.lat = lat;
         this.lng = lng;
+    }
+
+    public Kickboard() {
+        this.id = 0L;
+        this.lat = 0.0;
+        this.lng = 0.0;
     }
 }

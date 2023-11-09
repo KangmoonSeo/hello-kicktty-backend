@@ -13,6 +13,7 @@ import java.util.List;
 @RequestMapping("kickboards")
 public class KickboardController {
 
+
     private final KickboardService kickboardService;
 
     @GetMapping
@@ -29,13 +30,10 @@ public class KickboardController {
         return new KickboardResponseDto(kickboardService.findKickboard(id));
     }
 
-
     @PostMapping
     KickboardResponseDto addKickboard(Long id, Double lat, Double lng) {
-        kickboardService.addKickboard(id, lat, lng);
-        return new KickboardResponseDto(kickboardService.findKickboard(id));
+        return new KickboardResponseDto(kickboardService.addKickboard(id, lat, lng));
     }
-
 
     @DeleteMapping("/{id}")
     void removeKickboard(@PathVariable Long id) {
