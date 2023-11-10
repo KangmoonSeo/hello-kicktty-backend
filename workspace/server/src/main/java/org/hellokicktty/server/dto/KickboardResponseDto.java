@@ -10,6 +10,7 @@ public class KickboardResponseDto {
     Double lng;
     final Integer cluster_number = -1;
     final Boolean danger = false;
+    final Boolean border = false;
 
     public KickboardResponseDto(Kickboard kickboard) {
         if (kickboard == null) {

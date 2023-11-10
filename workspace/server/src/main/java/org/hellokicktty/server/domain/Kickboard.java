@@ -13,6 +13,7 @@ public class Kickboard {
     Double lng;
     final Integer clusterNumber = -1;
     final Boolean danger = false;
+    final Boolean border = false;
 
     @Builder
     protected Kickboard(Long id, Double lat, Double lng) {
