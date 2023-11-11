@@ -27,17 +27,21 @@ public class KickboardController {
 
         List<Kickboard> kickboardList = kickboardService.findKickboardsInRange(lat, lng);
         Integer rewardable = -1;
+        double distance = -1d;
         for (Kickboard kickboard : kickboardList) {
             if (lat == null || lng == null) break;
+            log.debug("cluster_number = {}, distance = {}", kickboard.getClusterNumber(), distance);
             if (kickboard.getClusterNumber() == -1) continue;
-            double distance = KickboardService.convertCoordinateToMeter(
+            distance = KickboardService.convertCoordinateToMeter(
                     new Coordinate(kickboard.getLat(), kickboard.getLng()),
                     new Coordinate(lat, lng));
-            log.debug("distance = {}", distance);
-            if (distance > KickboardService.CLUSTER_METER_RANGE) break;
-            rewardable = kickboard.getClusterNumber();
+
+            if (distance < KickboardService.CLUSTER_METER_RANGE) {
+                rewardable = kickboard.getClusterNumber(); // reward 설정
+            }
+            break;
         }
-        return new KickboardListResponseDto(rewardable, kickboardList);
+        return new KickboardListResponseDto(rewardable, distance, kickboardList);
     }
 
     @GetMapping("/{id}")
