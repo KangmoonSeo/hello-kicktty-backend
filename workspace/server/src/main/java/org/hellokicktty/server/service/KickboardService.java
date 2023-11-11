@@ -3,6 +3,7 @@ package org.hellokicktty.server.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.hellokicktty.server.domain.Coordinate;
 import org.hellokicktty.server.domain.Kickboard;
 import org.hellokicktty.server.repository.KickboardRepository;
 import org.slf4j.Logger;
@@ -14,9 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +23,19 @@ public class KickboardService {
 
     private final KickboardRepository kickboardRepository;
     Logger log = LoggerFactory.getLogger(Logger.class);
-    private final double FIND_RANGE = 0.05;
+    public static double FIND_COORDINATE_RANGE, CLUSTER_COORDINATE_RANGE;
+    public static double FIND_METER_RANGE, CLUSTER_METER_RANGE;
+
+
+
     private final String URL = "http://localhost:8081/cluster"; // AI Server Request End-Point
 
     @PostConstruct
     public void init() {
+        this.FIND_COORDINATE_RANGE = 0.05;
+        this.CLUSTER_COORDINATE_RANGE = 0.005;
+        this.CLUSTER_METER_RANGE = 100; // 100 meter
+
         addDummyKickboards();
     }
 
@@ -65,9 +72,18 @@ public class KickboardService {
     }
 
     public List<Kickboard> findKickboardsInRange(Double lat, Double lng) {
-        if (lat == null || lng == null) return kickboardRepository.findAll();
 
-        return kickboardRepository.findAllInRange(lat, lng, FIND_RANGE);
+        if (lat == null || lng == null) return kickboardRepository.findAll();
+        // 결과 거리 별 정렬해서 제공
+        List<Kickboard> kickboardList = kickboardRepository.findAllInRange(lat, lng, FIND_COORDINATE_RANGE);
+        Collections.sort(
+                kickboardList,
+                Comparator.comparingDouble(
+                        kickboard ->
+                                convertCoordinateToMeter(
+                                        new Coordinate(lat, lng),
+                                        new Coordinate(kickboard.getLat(), kickboard.getLng()))));
+        return kickboardList;
     }
 
     public Kickboard findKickboard(Long id) {
@@ -119,5 +135,31 @@ public class KickboardService {
             e.printStackTrace();
         }
     }
+
+
+    public static double convertCoordinateToMeter(Coordinate a, Coordinate b) {
+        // 지구 반지름 (미터 단위)
+        final double EARTH_RADIUS = 6371000;
+
+        // 라디안으로 변환
+        double lat1 = Math.toRadians(a.getLat());
+        double lng1 = Math.toRadians(a.getLng());
+        double lat2 = Math.toRadians(b.getLat());
+        double lng2 = Math.toRadians(b.getLng());
+
+        // 위도 및 경도의 차이 계산
+        double dLat = lat2 - lat1;
+        double dLon = lng2 - lng1;
+
+        // Haversine 공식을 사용하여 거리 계산
+        double haversineLat = Math.pow(Math.sin(dLat / 2), 2);
+        double haversineLng = Math.pow(Math.sin(dLon / 2), 2);
+
+        double a1 = haversineLat + Math.cos(lat1) * Math.cos(lat2) * haversineLng;
+        double c = 2 * Math.atan2(Math.sqrt(a1), Math.sqrt(1 - a1));
+
+        return EARTH_RADIUS * c;
+    }
+
 
 }

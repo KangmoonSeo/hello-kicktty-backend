@@ -40,14 +40,16 @@ public class JpaKickboardRepository implements KickboardRepository {
     }
 
     public List<Kickboard> findAllInRange(Double lat, Double lng, Double radius) {
-        return em.createQuery("SELECT k FROM Kickboard k"
-                                + " WHERE (k.lat - :a) * (k.lat - :a) + (k.lng - :b) * (k.lng - :b) < :r * :r"
+
+
+        return em.createQuery("SELECT k"
+                                + " FROM Kickboard k"
+                                + " WHERE POWER(k.lat - :a, 2) + POWER(k.lng - :b, 2) < POWER(:r, 2)"
                         , Kickboard.class)
                 .setParameter("a", lat)
                 .setParameter("b", lng)
                 .setParameter("r", radius)
                 .getResultList();
-
     }
 
 

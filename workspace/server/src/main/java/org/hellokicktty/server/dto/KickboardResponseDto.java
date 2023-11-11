@@ -12,6 +12,7 @@ public class KickboardResponseDto {
     final Boolean danger = false;
     final Boolean border = false;
 
+
     public KickboardResponseDto(Kickboard kickboard) {
         if (kickboard == null) {
             this.id = 0L;
