@@ -3,15 +3,19 @@ package org.hellokicktty.server.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
+@Setter
+@NoArgsConstructor
 public class Cluster {
 
     Long cluster_id;
     Double distance;
-    Coordinate center;
-    List<Coordinate> borders;
+    Coordinate center = new Coordinate(0d, 0d);
+    List<Coordinate> borders = new ArrayList<>();
 }

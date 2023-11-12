@@ -2,16 +2,16 @@ package org.hellokicktty.server.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hellokicktty.server.domain.Cluster;
-import org.hellokicktty.server.domain.Kickboard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class KickboardListResponseDto {
+@NoArgsConstructor
+public class ClusterListResponseDto {
 
-    Double distance = 0d;
-    List<Cluster> clusters;
-    List<Kickboard> kickboards;
+    List<Cluster> clusters = new ArrayList<>();
 }

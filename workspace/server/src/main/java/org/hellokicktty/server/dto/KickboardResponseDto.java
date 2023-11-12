@@ -8,10 +8,9 @@ public class KickboardResponseDto {
     Long id;
     Double lat;
     Double lng;
-    final Integer cluster_number = -1;
-    final Boolean danger = false;
-    final Boolean border = false;
-
+    Long cluster_id = 0L;
+    Boolean danger = false;
+    Boolean border = false;
 
     public KickboardResponseDto(Kickboard kickboard) {
         if (kickboard == null) {
@@ -22,6 +21,9 @@ public class KickboardResponseDto {
             this.id = kickboard.getId();
             this.lat = kickboard.getLat();
             this.lng = kickboard.getLng();
+            this.cluster_id = kickboard.getCluster_id();
+            this.danger = kickboard.getDanger();
+            this.border = kickboard.getBorder();
         }
     }
 }

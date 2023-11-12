@@ -24,41 +24,23 @@ public class JpaKickboardRepository implements KickboardRepository {
         return kickboard.getId();
     }
 
+    public Long update(Kickboard k) {
+        Kickboard kickboard = em.find(Kickboard.class, k.getId());
+        kickboard.update(k.getCluster_id(), k.getDanger(), k.getBorder());
+        return kickboard.getId();
+    }
+
     @Transactional
     public void remove(Kickboard kickboard) {
         em.remove(kickboard);
     }
 
-
     public Kickboard findById(Long id) {
         return em.find(Kickboard.class, id);
     }
-
-    @Transactional
-    public void update(Kickboard kickboard) {
-
-        Kickboard k = em.find(Kickboard.class, kickboard.getId());
-
-    }
-
 
     public List<Kickboard> findAll() {
         return em.createQuery("SELECT k FROM Kickboard k", Kickboard.class)
                 .getResultList();
     }
-
-    public List<Kickboard> findAllInRange(Double lat, Double lng, Double radius) {
-
-
-        return em.createQuery("SELECT k"
-                                + " FROM Kickboard k"
-                                + " WHERE POWER(k.lat - :a, 2) + POWER(k.lng - :b, 2) < POWER(:r, 2)"
-                        , Kickboard.class)
-                .setParameter("a", lat)
-                .setParameter("b", lng)
-                .setParameter("r", radius)
-                .getResultList();
-    }
-
-
 }

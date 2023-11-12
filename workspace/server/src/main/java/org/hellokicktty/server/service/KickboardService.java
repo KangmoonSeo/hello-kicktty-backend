@@ -3,6 +3,7 @@ package org.hellokicktty.server.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.hellokicktty.server.domain.Cluster;
 import org.hellokicktty.server.domain.Coordinate;
 import org.hellokicktty.server.domain.Kickboard;
 import org.hellokicktty.server.repository.KickboardRepository;
@@ -23,69 +24,66 @@ public class KickboardService {
 
     private final KickboardRepository kickboardRepository;
     Logger log = LoggerFactory.getLogger(Logger.class);
-    public static double FIND_COORDINATE_RANGE, CLUSTER_COORDINATE_RANGE;
-    public static double FIND_METER_RANGE, CLUSTER_METER_RANGE;
+
+    public static double CLUSTER_METER_RANGE = 5d; // meter
+
+    public static double CLUSTER_COORDINATE_RANGE = 0.00001 * CLUSTER_METER_RANGE; // degree
 
     private final String URL = "http://localhost:8081/cluster"; // AI Server Request End-Point
 
     @PostConstruct
     public void init() {
-        this.FIND_COORDINATE_RANGE = 0.05;
-        this.CLUSTER_COORDINATE_RANGE = 0.005;
-        this.CLUSTER_METER_RANGE = 100; // 100 meter
-
         addDummyKickboards();
     }
 
-    public Kickboard addKickboard(Long id, Double lat, Double lng) {
+    public Long addKickboard(Kickboard kickboard) {
 
-        if (kickboardRepository.findById(id) != null) {
-            log.info("duplicate kickboard {} addition called", id);
-            return new Kickboard();
+        if (kickboardRepository.findById(kickboard.getId()) != null) {
+            log.info("duplicate kickboard {} addition called", kickboard.getId());
+            return 0L;
         }
 
-        Kickboard kickboard = Kickboard.builder()
-                .id(id)
-                .lat(lat)
-                .lng(lng)
-                .build();
         kickboardRepository.save(kickboard);
 
         requestCluster(kickboard.getLat(), kickboard.getLng());
         log.info("kickboard {} added", kickboard.getId());
-        return kickboard;
-
+        return kickboard.getId();
     }
 
-    public void removeKickboard(Long id) {
+    public Long updateKickboard(Kickboard kickboard) {
+        if (kickboardRepository.findById(kickboard.getId()) == null) {
+            log.info("update for null kickboard {} called", kickboard.getId());
+            return 0L;
+        }
+        kickboardRepository.update(kickboard);
+        return kickboard.getId();
+    }
+
+    public Long removeKickboard(Long id) {
         Kickboard kickboard = kickboardRepository.findById(id);
         if (kickboard == null) {
             log.info("void kickboard {} removal called", id);
-            return;
+            return 0L;
         }
 
         kickboardRepository.remove(kickboard);
         log.info("kickboard {} removed", id);
         requestCluster(kickboard.getLat(), kickboard.getLng());
+        return id;
     }
 
-    public void updateKickboard(Kickboard kickboard) {
-        kickboardRepository.update(kickboard);
+    public List<Kickboard> findKickboardsInOrder(Double lat, Double lng) {
 
-    }
+        List<Kickboard> kickboardList = kickboardRepository.findAll();
 
-    public List<Kickboard> findKickboardsInRange(Double lat, Double lng) {
-
-        if (lat == null || lng == null) return kickboardRepository.findAll();
-        // 결과 거리 별 정렬해서 제공
-        List<Kickboard> kickboardList = kickboardRepository.findAllInRange(lat, lng, FIND_COORDINATE_RANGE);
+        if (lat == null || lng == null) return kickboardList;
         Collections.sort(
                 kickboardList,
                 Comparator.comparingDouble(
-                        kickboard ->
-                                convertCoordinateToMeter(
-                                        new Coordinate(lat, lng),
-                                        new Coordinate(kickboard.getLat(), kickboard.getLng()))));
+                        kickboard -> (getCoordinateDelta(lat, lng, kickboard.getLat(), kickboard.getLng()))
+                )
+        );
+
         return kickboardList;
     }
 
@@ -140,29 +138,36 @@ public class KickboardService {
     }
 
 
-    public static double convertCoordinateToMeter(Coordinate a, Coordinate b) {
-        // 지구 반지름 (미터 단위)
-        final double EARTH_RADIUS = 6371000;
+    // == utils ==
 
-        // 라디안으로 변환
-        double lat1 = Math.toRadians(a.getLat());
-        double lng1 = Math.toRadians(a.getLng());
-        double lat2 = Math.toRadians(b.getLat());
-        double lng2 = Math.toRadians(b.getLng());
-
-        // 위도 및 경도의 차이 계산
-        double dLat = lat2 - lat1;
-        double dLon = lng2 - lng1;
-
-        // Haversine 공식을 사용하여 거리 계산
-        double haversineLat = Math.pow(Math.sin(dLat / 2), 2);
-        double haversineLng = Math.pow(Math.sin(dLon / 2), 2);
-
-        double a1 = haversineLat + Math.cos(lat1) * Math.cos(lat2) * haversineLng;
-        double c = 2 * Math.atan2(Math.sqrt(a1), Math.sqrt(1 - a1));
-
-        return EARTH_RADIUS * c;
+    public static Double getCoordinateDelta(Double uLat, Double uLng, Double vLat, Double vLng) {
+        return getCoordinateDelta(new Coordinate(uLat, uLng), new Coordinate(vLat, vLng));
     }
 
+    public static Double getCoordinateDelta(Coordinate u, Coordinate v) {
+        Double dLat = u.getLat() - v.getLat();
+        Double dLng = u.getLng() - v.getLng();
+        return Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLng, 2));
+    }
 
+    public static Double convertCtoM(Double coordinateDelta) {
+        return coordinateDelta * 0.00001;
+    }
+
+    public static List<Cluster> clusterKickboards(List<Kickboard> kickboardList) {
+        Map<Long, Cluster> clusterMap = new TreeMap<>();
+        for (Kickboard kickboard : kickboardList) {
+            if (kickboard.getBorder()) {
+                Long cluster_id = kickboard.getCluster_id();
+                Cluster cluster = clusterMap.getOrDefault(cluster_id, new Cluster());
+                cluster.setCluster_id(cluster_id);
+                Coordinate coordinate = new Coordinate(kickboard.getLat(), kickboard.getLng());
+                cluster.getBorders().add(coordinate);
+                clusterMap.put(cluster_id, cluster);
+            }
+        }
+        Coordinate center = new Coordinate(0d, 0d);
+
+        return new ArrayList<>(clusterMap.values());
+    }
 }
