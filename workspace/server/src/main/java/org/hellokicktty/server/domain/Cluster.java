@@ -8,9 +8,10 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class Layer {
+public class Cluster {
 
-    Long id;
-    List<Coordinate> coordinates;
-
+    Long cluster_id;
+    Double distance;
+    Coordinate center;
+    List<Coordinate> borders;
 }

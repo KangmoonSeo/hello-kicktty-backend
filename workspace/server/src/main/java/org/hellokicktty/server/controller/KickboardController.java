@@ -1,6 +1,7 @@
 package org.hellokicktty.server.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.hellokicktty.server.domain.Cluster;
 import org.hellokicktty.server.domain.Coordinate;
 import org.hellokicktty.server.domain.Kickboard;
 import org.hellokicktty.server.dto.KickboardListResponseDto;
@@ -11,23 +12,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("kickboards")
+@RequestMapping("/kickboards")
 public class KickboardController {
 
 
     private final KickboardService kickboardService;
     Logger log = LoggerFactory.getLogger(Logger.class);
 
-    @GetMapping
-    KickboardListResponseDto findKickboardsInRange(Double lat, Double lng, @Nullable Boolean tow) {
 
-        List<Kickboard> kickboardList = kickboardService.findKickboardsInRange(lat, lng);
-        Integer rewardable = -1;
+    @GetMapping
+    KickboardListResponseDto findKickboardsInRange(Double lat, Double lng) {
+
+
         double distance = -1d;
+        List<Cluster> clusters = new ArrayList<>();
+        List<Kickboard> kickboardList = kickboardService.findKickboardsInRange(lat, lng);
+
         for (Kickboard kickboard : kickboardList) {
             if (lat == null || lng == null) break;
             log.debug("cluster_number = {}, distance = {}", kickboard.getClusterNumber(), distance);
@@ -37,11 +42,12 @@ public class KickboardController {
                     new Coordinate(lat, lng));
 
             if (distance < KickboardService.CLUSTER_METER_RANGE) {
-                rewardable = kickboard.getClusterNumber(); // reward 설정
+                distance = kickboard.getClusterNumber(); // distance 설정
             }
             break;
         }
-        return new KickboardListResponseDto(rewardable, distance, kickboardList);
+
+        return new KickboardListResponseDto(distance, clusters, kickboardList);
     }
 
     @GetMapping("/{id}")
@@ -58,5 +64,4 @@ public class KickboardController {
     void removeKickboard(@PathVariable Long id) {
         kickboardService.removeKickboard(id);
     }
-
 }

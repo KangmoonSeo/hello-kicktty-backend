@@ -26,8 +26,6 @@ public class KickboardService {
     public static double FIND_COORDINATE_RANGE, CLUSTER_COORDINATE_RANGE;
     public static double FIND_METER_RANGE, CLUSTER_METER_RANGE;
 
-
-
     private final String URL = "http://localhost:8081/cluster"; // AI Server Request End-Point
 
     @PostConstruct

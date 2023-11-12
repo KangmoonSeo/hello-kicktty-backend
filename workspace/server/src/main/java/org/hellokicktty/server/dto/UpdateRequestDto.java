@@ -8,6 +8,4 @@ import java.util.List;
 @Getter
 public class UpdateRequestDto {
     List<Kickboard> kickboards;
-
-
 }
