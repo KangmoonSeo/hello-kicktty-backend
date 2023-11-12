@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class KickboardListResponseDto {
     Integer rewardable = 0;
+
     Double distance = -1d;
     List<Kickboard> kickboardList;
 

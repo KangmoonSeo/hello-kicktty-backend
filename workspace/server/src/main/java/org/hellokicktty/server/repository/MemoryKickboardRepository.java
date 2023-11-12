@@ -19,7 +19,7 @@ public class MemoryKickboardRepository implements KickboardRepository {
     public void remove(Kickboard kickboard) {
         kickboardList.remove(kickboard);
     }
-
+    public void update(Kickboard kickboard) {}
 
     public Kickboard findById(Long id) {
         for (Kickboard kickboard : kickboardList) {

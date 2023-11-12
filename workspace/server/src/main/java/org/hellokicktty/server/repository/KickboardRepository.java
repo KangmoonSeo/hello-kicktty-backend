@@ -9,6 +9,7 @@ public interface KickboardRepository {
     public Long save(Kickboard kickboard);
 
     public void remove(Kickboard kickboard);
+    public void update(Kickboard kickboard);
 
     public Kickboard findById(Long id);
 

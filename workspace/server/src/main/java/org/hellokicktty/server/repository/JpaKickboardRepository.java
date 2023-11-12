@@ -34,6 +34,14 @@ public class JpaKickboardRepository implements KickboardRepository {
         return em.find(Kickboard.class, id);
     }
 
+    @Transactional
+    public void update(Kickboard kickboard) {
+
+        Kickboard k = em.find(Kickboard.class, kickboard.getId());
+
+    }
+
+
     public List<Kickboard> findAll() {
         return em.createQuery("SELECT k FROM Kickboard k", Kickboard.class)
                 .getResultList();

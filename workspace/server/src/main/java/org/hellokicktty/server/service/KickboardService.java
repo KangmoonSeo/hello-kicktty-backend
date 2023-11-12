@@ -71,6 +71,11 @@ public class KickboardService {
         requestCluster(kickboard.getLat(), kickboard.getLng());
     }
 
+    public void updateKickboard(Kickboard kickboard) {
+        kickboardRepository.update(kickboard);
+
+    }
+
     public List<Kickboard> findKickboardsInRange(Double lat, Double lng) {
 
         if (lat == null || lng == null) return kickboardRepository.findAll();
