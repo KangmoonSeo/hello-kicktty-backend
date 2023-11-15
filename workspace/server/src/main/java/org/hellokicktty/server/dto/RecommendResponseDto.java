@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClusterListResponseDto {
+public class RecommendResponseDto {
 
     List<Cluster> clusters = new ArrayList<>();
 }

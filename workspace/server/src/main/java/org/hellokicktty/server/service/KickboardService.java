@@ -154,20 +154,5 @@ public class KickboardService {
         return coordinateDelta * 0.00001;
     }
 
-    public static List<Cluster> clusterKickboards(List<Kickboard> kickboardList) {
-        Map<Long, Cluster> clusterMap = new TreeMap<>();
-        for (Kickboard kickboard : kickboardList) {
-            if (kickboard.getBorder()) {
-                Long cluster_id = kickboard.getCluster_id();
-                Cluster cluster = clusterMap.getOrDefault(cluster_id, new Cluster());
-                cluster.setCluster_id(cluster_id);
-                Coordinate coordinate = new Coordinate(kickboard.getLat(), kickboard.getLng());
-                cluster.getBorders().add(coordinate);
-                clusterMap.put(cluster_id, cluster);
-            }
-        }
-        Coordinate center = new Coordinate(0d, 0d);
 
-        return new ArrayList<>(clusterMap.values());
-    }
 }

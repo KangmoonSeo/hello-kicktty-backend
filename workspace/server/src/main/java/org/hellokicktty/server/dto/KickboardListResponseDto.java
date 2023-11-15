@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class KickboardListResponseDto {
 
-    Double distance = 0d;
+    Double distance;
     List<Cluster> clusters;
     List<Kickboard> kickboards;
 }
