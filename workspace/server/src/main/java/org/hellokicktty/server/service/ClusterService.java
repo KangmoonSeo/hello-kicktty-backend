@@ -6,10 +6,8 @@ import org.hellokicktty.server.domain.Coordinate;
 import org.hellokicktty.server.domain.Kickboard;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,9 +16,9 @@ public class ClusterService {
 
     // == utils ==
 
-    public static List<Cluster> clusterKickboards(List<Kickboard> kickboardList) {
+    public static List<Cluster> clusterKickboards(List<Kickboard> kickboardList, Double lat, Double lng) {
 
-        Map<Long, Cluster> clusterMap = new TreeMap<>();
+        Map<Long, Cluster> clusterMap = new HashMap<>();
         for (Kickboard kickboard : kickboardList) {
             if (kickboard.getBorder()) {
                 Long cluster_id = kickboard.getCluster_id();
@@ -38,8 +36,27 @@ public class ClusterService {
             List<Coordinate> borders = cluster.getBorders();
             Coordinate center = getCenter(borders);
             cluster.setCenter(center);
+
+            if (lat == null || lng == null) {
+                cluster.setDistance(-1d);
+                continue;
+            }
+            double dist = 1e9d;
+
+            for (Coordinate border : borders) {
+                Double delta = KickboardService.getCoordinateDelta(new Coordinate(lat, lng), border);
+                delta = KickboardService.coordinateToMeter(delta);
+                dist = Math.min(dist, delta);
+            }
+            cluster.setDistance(dist);
         }
-        return new ArrayList<>(clusterMap.values());
+        if (lat == null || lng == null) return clusterList;
+
+        clusterList = clusterList.stream()
+                .sorted(Comparator.comparingDouble(Cluster::getDistance))
+                .collect(Collectors.toList());
+
+        return clusterList;
     }
 
     public static Coordinate getCenter(List<Coordinate> borders) {

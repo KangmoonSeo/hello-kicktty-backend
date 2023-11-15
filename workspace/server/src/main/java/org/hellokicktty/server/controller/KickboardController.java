@@ -2,6 +2,7 @@ package org.hellokicktty.server.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hellokicktty.server.domain.Cluster;
+import org.hellokicktty.server.domain.Coordinate;
 import org.hellokicktty.server.domain.Kickboard;
 import org.hellokicktty.server.dto.KickboardListResponseDto;
 import org.hellokicktty.server.dto.KickboardResponseDto;
@@ -10,7 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hellokicktty.server.service.ClusterService.*;
 
@@ -26,7 +29,9 @@ public class KickboardController {
     KickboardListResponseDto findKickboards(Double lat, Double lng) {
 
         List<Kickboard> kickboardList = kickboardService.findKickboardsInOrder(lat, lng);
-        List<Cluster> clusters = clusterKickboards(kickboardList);
+        List<Cluster> clusters = clusterKickboards(kickboardList, lat, lng);
+
+
         Double distance = getShortestDistance(clusters);
 
         return new KickboardListResponseDto(distance, clusters, kickboardList);

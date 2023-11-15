@@ -24,6 +24,7 @@ public class JpaKickboardRepository implements KickboardRepository {
         return kickboard.getId();
     }
 
+    @Transactional
     public Long update(Kickboard k) {
         Kickboard kickboard = em.find(Kickboard.class, k.getId());
         kickboard.update(k.getCluster_id(), k.getDanger(), k.getBorder());

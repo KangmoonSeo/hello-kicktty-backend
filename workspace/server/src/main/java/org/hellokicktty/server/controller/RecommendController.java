@@ -19,7 +19,7 @@ public class RecommendController {
 
     Logger log = LoggerFactory.getLogger(Logger.class);
     private final KickboardService kickboardService;
-    private final int LEAST_CLUSTER_NUMBER = 4;
+    private final int MAX_CLUSTER_NUMBER = 4;
 
     @GetMapping("/recommend")
     public RecommendResponseDto recommendClustersByKickboardId(Long id) {
@@ -28,8 +28,8 @@ public class RecommendController {
         if (kickboard == null) return new RecommendResponseDto();
 
         List<Kickboard> kickboardList = kickboardService.findKickboardsInOrder(kickboard.getLat(), kickboard.getLng());
-        List<Cluster> clusters = ClusterService.clusterKickboards(kickboardList);
-        clusters.subList(0, Math.min(LEAST_CLUSTER_NUMBER, clusters.size()));
+        List<Cluster> clusters = ClusterService.clusterKickboards(kickboardList, kickboard.getLat(), kickboard.getLng());
+        clusters = clusters.subList(0, Math.min(MAX_CLUSTER_NUMBER, clusters.size()));
 
         return new RecommendResponseDto(clusters);
     }

@@ -29,7 +29,7 @@ public class KickboardService {
 
     public static double CLUSTER_COORDINATE_RANGE = 0.00001 * CLUSTER_METER_RANGE; // degree
 
-    private final String URL = "http://localhost:8081/cluster"; // AI Server Request End-Point
+    private final String URL = "http://localhost:8001/cluster"; // AI Server Request End-Point
 
     @PostConstruct
     public void init() {
@@ -150,9 +150,8 @@ public class KickboardService {
         return Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLng, 2));
     }
 
-    public static Double convertCtoM(Double coordinateDelta) {
-        return coordinateDelta * 0.00001;
+    public static Double coordinateToMeter(Double coordinateDelta) {
+        return coordinateDelta * 100000;
     }
-
 
 }
