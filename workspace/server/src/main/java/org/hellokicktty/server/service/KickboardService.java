@@ -25,7 +25,7 @@ public class KickboardService {
     private final KickboardRepository kickboardRepository;
     Logger log = LoggerFactory.getLogger(Logger.class);
 
-    public static double CLUSTER_METER_RANGE = 5d; // meter
+    public static double CLUSTER_METER_RANGE = 4d; // meter
 
     public static double CLUSTER_COORDINATE_RANGE = 0.00001 * CLUSTER_METER_RANGE; // degree
 

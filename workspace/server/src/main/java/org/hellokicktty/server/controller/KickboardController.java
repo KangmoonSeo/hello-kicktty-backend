@@ -47,15 +47,6 @@ public class KickboardController {
         return kickboardService.addKickboard(kickboard);
     }
 
-    @PatchMapping("/{id}")
-    Long updateKickboard(@PathVariable Long id, Long cluster_id, Boolean danger, Boolean border) {
-        Kickboard kickboard = Kickboard.builder()
-                .id(id)
-                .build();
-        kickboard.update(cluster_id, danger, border); // nullable
-        return kickboardService.updateKickboard(kickboard);
-    }
-
     @DeleteMapping("/{id}")
     Long removeKickboard(@PathVariable Long id) {
         return kickboardService.removeKickboard(id);

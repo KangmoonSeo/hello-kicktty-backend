@@ -14,6 +14,10 @@ import java.util.TreeMap;
 @Service
 @RequiredArgsConstructor
 public class ClusterService {
+
+
+    // == utils ==
+
     public static List<Cluster> clusterKickboards(List<Kickboard> kickboardList) {
 
         Map<Long, Cluster> clusterMap = new TreeMap<>();
