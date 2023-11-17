@@ -2,7 +2,6 @@ package org.hellokicktty.server.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hellokicktty.server.domain.Kickboard;
-import org.hellokicktty.server.dto.UpdateRequestDto;
 import org.hellokicktty.server.service.KickboardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +19,10 @@ public class UpdateController {
     private final KickboardService kickboardService;
 
     @PostMapping("/update")
-    public void updateKickboards(@RequestBody UpdateRequestDto dto) {
-
-        List<Kickboard> kickboardList = dto.getKickboards();
+    public void updateKickboards(@RequestBody List<Kickboard> kickboardList) {
         for (Kickboard k : kickboardList) {
             kickboardService.updateKickboard(k);
         }
-        log.info("{} kickboards are updated on repository", dto.getKickboards().size());
+        log.info("{} kickboards are updated on repository", kickboardList.size());
     }
 }
