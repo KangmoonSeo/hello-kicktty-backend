@@ -48,6 +48,7 @@ public class KickboardController {
         Long id = dto.getId();
         Double lat = dto.getLat();
         Double lng = dto.getLng();
+        if (lat == null || lat == 0d || lng == null || lng == 0d) return 0L;
 
         Kickboard kickboard = Kickboard.builder()
                 .id(id)
