@@ -21,7 +21,7 @@ public class UpdateController {
 
     @PostMapping("/update")
     public void updateKickboards(@RequestBody UpdateRequestDto dto) {
-        
+
         List<Kickboard> kickboardList = dto.getKickboards();
         for (Kickboard k : kickboardList) {
             kickboardService.updateKickboard(k);

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.hellokicktty.server.domain.Cluster;
 import org.hellokicktty.server.domain.Coordinate;
 import org.hellokicktty.server.domain.Kickboard;
+import org.hellokicktty.server.dto.AddRequestDto;
 import org.hellokicktty.server.dto.KickboardListResponseDto;
 import org.hellokicktty.server.dto.KickboardResponseDto;
 import org.hellokicktty.server.service.KickboardService;
@@ -31,7 +32,6 @@ public class KickboardController {
         List<Kickboard> kickboardList = kickboardService.findKickboardsInOrder(lat, lng);
         List<Cluster> clusters = clusterKickboards(kickboardList, lat, lng);
 
-
         Double distance = getShortestDistance(clusters);
 
         return new KickboardListResponseDto(distance, clusters, kickboardList);
@@ -43,7 +43,12 @@ public class KickboardController {
     }
 
     @PostMapping
-    Long addKickboard(Long id, Double lat, Double lng) {
+    Long addKickboard(@RequestBody AddRequestDto dto) {
+
+        Long id = dto.getId();
+        Double lat = dto.getLat();
+        Double lng = dto.getLng();
+
         Kickboard kickboard = Kickboard.builder()
                 .id(id)
                 .lat(lat)
