@@ -34,7 +34,10 @@ public class RecommendController {
         List<Cluster> clusters = ClusterService.clusterKickboards(kickboardList, kickboard.getLat(), kickboard.getLng());
         clusters = clusters.subList(0, Math.min(MAX_CLUSTER_NUMBER, clusters.size()));
 
+
+        String my_name = recommendService.getDoroName(kickboard.getLat(), kickboard.getLng());
+
         List<ClusterWithName> clustersWithName = recommendService.assignName(clusters);
-        return new RecommendResponseDto(clustersWithName);
+        return new RecommendResponseDto(my_name, clustersWithName);
     }
 }

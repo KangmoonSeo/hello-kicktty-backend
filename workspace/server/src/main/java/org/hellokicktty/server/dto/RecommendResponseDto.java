@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecommendResponseDto {
+    String my_name;
 
     List<ClusterWithName> clusters = new ArrayList<>();
 }
