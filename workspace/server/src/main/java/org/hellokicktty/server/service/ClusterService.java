@@ -29,7 +29,7 @@ public class ClusterService {
                 clusterMap.put(cluster_id, cluster);
             }
         }
-        clusterMap.remove(-1);
+        clusterMap.remove(-1L);
         List<Cluster> clusterList = new ArrayList<>(clusterMap.values());
 
         for (Cluster cluster : clusterList) {
