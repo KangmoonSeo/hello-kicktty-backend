@@ -16,5 +16,5 @@ public class Cluster {
     Long cluster_id;
     Double distance;
     Coordinate center = new Coordinate(0d, 0d);
-    List<Coordinate> borders = new ArrayList<>();
+    List<Border> borders = new ArrayList<>();
 }

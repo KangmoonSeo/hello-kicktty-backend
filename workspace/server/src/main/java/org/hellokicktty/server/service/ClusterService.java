@@ -1,6 +1,7 @@
 package org.hellokicktty.server.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hellokicktty.server.domain.Border;
 import org.hellokicktty.server.domain.Cluster;
 import org.hellokicktty.server.domain.Coordinate;
 import org.hellokicktty.server.domain.Kickboard;
@@ -24,8 +25,8 @@ public class ClusterService {
                 Long cluster_id = kickboard.getCluster_id();
                 Cluster cluster = clusterMap.getOrDefault(cluster_id, new Cluster());
                 cluster.setCluster_id(cluster_id);
-                Coordinate coordinate = new Coordinate(kickboard.getLat(), kickboard.getLng());
-                cluster.getBorders().add(coordinate);
+                Border border = new Border(kickboard.getBorder(), kickboard.getLat(), kickboard.getLng());
+                cluster.getBorders().add(border);
                 clusterMap.put(cluster_id, cluster);
             }
         }
@@ -34,7 +35,7 @@ public class ClusterService {
 
         for (Cluster cluster : clusterList) {
 
-            List<Coordinate> borders = cluster.getBorders();
+            List<Border> borders = cluster.getBorders();
             Coordinate center = getCenter(borders);
             cluster.setCenter(center);
 
@@ -44,12 +45,19 @@ public class ClusterService {
             }
             double dist = 1e9d;
 
-            for (Coordinate border : borders) {
-                Double delta = KickboardService.getCoordinateDelta(new Coordinate(lat, lng), border);
+            for (Border border : borders) {
+                Double delta = KickboardService.getCoordinateDelta(
+                        new Coordinate(lat, lng),
+                        new Coordinate(border.getLat(), border.getLng()));
                 delta = KickboardService.coordinateToMeter(delta);
                 dist = Math.min(dist, delta);
             }
             cluster.setDistance(dist);
+            borders = borders.stream()
+                    .sorted(Comparator.comparingInt(Border::getId))
+                    .collect(Collectors.toList());
+
+            cluster.setBorders(borders);
         }
         if (lat == null || lng == null) return clusterList;
 
@@ -60,12 +68,12 @@ public class ClusterService {
         return clusterList;
     }
 
-    public static Coordinate getCenter(List<Coordinate> borders) {
+    public static Coordinate getCenter(List<Border> borders) {
         Double lat = 0d;
         Double lng = 0d;
         if (borders.isEmpty()) return new Coordinate(lat, lng);
 
-        for (Coordinate border : borders) {
+        for (Border border : borders) {
             lat += border.getLat();
             lng += border.getLng();
         }
