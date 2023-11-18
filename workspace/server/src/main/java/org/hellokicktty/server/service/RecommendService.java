@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import org.hellokicktty.server.domain.Cluster;
-import org.hellokicktty.server.domain.ClusterWithName;
+import org.hellokicktty.server.domain.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -27,8 +26,6 @@ public class RecommendService {
     private static final String ADDRESS_URL = "/v2/local/geo/coord2address";
 
 
-
-
     // == utils ==
 
     public List<ClusterWithName> assignName(List<Cluster> clusters) {
@@ -44,7 +41,33 @@ public class RecommendService {
         return clustersWithName;
     }
 
-    public  String getDoroName(Double lat, Double lng) {
+    public List<KickboardName> assignKickboardName(List<Kickboard> kickboards) {
+
+        List<KickboardName> kickboardsName = new ArrayList<>();
+
+        for (Kickboard kickboard : kickboards) {
+            KickboardName k = new KickboardName(kickboard);
+            String doroName = getDoroName(k.getCenter().getLat(), k.getCenter().getLng());
+            k.setName(doroName);
+            kickboardsName.add(k);
+        }
+        return kickboardsName;
+    }
+
+    public List<ClusterName> assignClusterName(List<Cluster> clusters) {
+
+        List<ClusterName> clustersWithName = new ArrayList<>();
+
+        for (Cluster cluster : clusters) {
+            ClusterName c = new ClusterName(cluster);
+            String doroName = getDoroName(c.getCenter().getLat(), c.getCenter().getLng());
+            c.setName(doroName);
+            clustersWithName.add(c);
+        }
+        return clustersWithName;
+    }
+
+    public String getDoroName(Double lat, Double lng) {
         Environment env = ac.getEnvironment();
         final String API_KEY = env.getProperty("env.KAKAO_API_KEY");
 
