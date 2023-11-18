@@ -25,10 +25,6 @@ public class KickboardService {
     private final KickboardRepository kickboardRepository;
     Logger log = LoggerFactory.getLogger(Logger.class);
 
-    public static double CLUSTER_METER_RANGE = 4d; // meter
-
-    public static double CLUSTER_COORDINATE_RANGE = 0.00001 * CLUSTER_METER_RANGE; // degree
-
     private final String URL = "http://localhost:8001/cluster"; // AI Server Request End-Point
 
     @PostConstruct

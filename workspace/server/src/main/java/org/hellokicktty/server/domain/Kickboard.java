@@ -14,7 +14,7 @@ public class Kickboard {
     Double lng;
     Long cluster_id;
     Boolean danger;
-    Boolean border;
+    Integer border;
 
     @Builder
     protected Kickboard(Long id, Double lat, Double lng) {
@@ -23,7 +23,7 @@ public class Kickboard {
         this.lng = lng;
         this.cluster_id = 0L;
         this.danger = false;
-        this.border = false;
+        this.border = -1;
     }
 
     public Kickboard() {
@@ -32,10 +32,10 @@ public class Kickboard {
         this.lng = 0.0;
         this.cluster_id = 0L;
         this.danger = false;
-        this.border = false;
+        this.border = -1;
     }
 
-    public void update(@Nullable Long cluster_id, @Nullable Boolean danger, @Nullable Boolean border) {
+    public void update(@Nullable Long cluster_id, @Nullable Boolean danger, @Nullable Integer border) {
         this.cluster_id = cluster_id;
         this.danger = danger;
         this.border = border;

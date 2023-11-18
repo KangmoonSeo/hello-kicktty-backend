@@ -20,7 +20,7 @@ public class ClusterService {
 
         Map<Long, Cluster> clusterMap = new HashMap<>();
         for (Kickboard kickboard : kickboardList) {
-            if (kickboard.getBorder()) {
+            if (kickboard.getBorder() >= 0) {
                 Long cluster_id = kickboard.getCluster_id();
                 Cluster cluster = clusterMap.getOrDefault(cluster_id, new Cluster());
                 cluster.setCluster_id(cluster_id);
