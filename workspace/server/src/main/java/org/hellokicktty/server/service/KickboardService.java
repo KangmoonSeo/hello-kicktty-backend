@@ -30,6 +30,7 @@ public class KickboardService {
     @PostConstruct
     public void init() {
         addDummyKickboards();
+        requestCluster(0d, 0d);
     }
 
     public Long addKickboard(Kickboard kickboard) {
