@@ -29,10 +29,11 @@ public class ClusterService {
                 clusterMap.put(cluster_id, cluster);
             }
         }
-
+        clusterMap.remove(-1);
         List<Cluster> clusterList = new ArrayList<>(clusterMap.values());
 
         for (Cluster cluster : clusterList) {
+
             List<Coordinate> borders = cluster.getBorders();
             Coordinate center = getCenter(borders);
             cluster.setCenter(center);
