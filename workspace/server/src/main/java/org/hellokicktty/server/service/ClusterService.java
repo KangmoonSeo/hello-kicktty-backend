@@ -54,7 +54,7 @@ public class ClusterService {
             }
             cluster.setDistance(dist);
             borders = borders.stream()
-                    .sorted(Comparator.comparingInt(Border::getId))
+                    .sorted(Comparator.comparingInt(Border::getBorder_id))
                     .collect(Collectors.toList());
 
             cluster.setBorders(borders);

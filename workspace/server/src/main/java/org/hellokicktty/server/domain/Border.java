@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class Border {
-    Integer id;
+    Integer border_id;
     Double lat;
     Double lng;
 }
