@@ -3,7 +3,6 @@ package org.hellokicktty.server.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.hellokicktty.server.domain.Cluster;
 import org.hellokicktty.server.domain.Coordinate;
 import org.hellokicktty.server.domain.Kickboard;
 import org.hellokicktty.server.repository.KickboardRepository;
@@ -29,7 +28,8 @@ public class KickboardService {
 
     @PostConstruct
     public void init() {
-        addDummyKickboards();
+        Boolean isBig = true;
+        addDummyKickboards(isBig);
         requestCluster(0d, 0d);
     }
 
@@ -108,10 +108,11 @@ public class KickboardService {
                 );
     }
 
-    private void addDummyKickboards() {
+    private void addDummyKickboards(Boolean isBig) {
+        final String KICKBOARD_SOURCE = isBig ? "static/data/dummy_big.json" : "static/data/dummy_small.json";
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            ClassPathResource resource = new ClassPathResource("static/data/dummy.json");
+            ClassPathResource resource = new ClassPathResource(KICKBOARD_SOURCE);
             InputStream inputStream = resource.getInputStream();
 
             Map<String, List<Map<String, Object>>> jsonData = objectMapper.readValue(inputStream, Map.class);
@@ -120,7 +121,7 @@ public class KickboardService {
 
             for (Map<String, Object> item : items) {
                 Kickboard kickboard = Kickboard.builder()
-                        .id(Long.parseLong(item.get("title").toString()))
+                        .id(Long.parseLong(item.get("id").toString()))
                         .lat((Double) item.get("lat"))
                         .lng((Double) item.get("lng"))
                         .build();
