@@ -1,30 +1,20 @@
 package org.hellokicktty.server.domain;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
 public class ClusterWithName {
-
-    Long cluster_id;
-    Double distance;
-    Coordinate center = new Coordinate(0d, 0d);
-    String name = "";
-    List<Border> borders = new ArrayList<>();
-
+    Long id;
+    Coordinate center;
+    String name;
 
     public ClusterWithName(Cluster cluster) {
-        this.cluster_id = cluster.getCluster_id();
-        this.distance = cluster.getDistance();
+        this.id = cluster.getCluster_id();
         this.center = cluster.getCenter();
         this.name = "";
-        this.borders = cluster.getBorders();
     }
 }

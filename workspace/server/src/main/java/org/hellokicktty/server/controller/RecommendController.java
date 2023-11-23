@@ -37,8 +37,8 @@ public class RecommendController {
         kickboards = kickboards.stream()
                 .filter(kickboard -> kickboard.getDanger())
                 .collect(Collectors.toList());
-        List<KickboardName> kickboardsName = recommendService.assignKickboardName(kickboards);
-        List<ClusterName> clustersName = recommendService.assignClusterName(clusters);
+        List<KickboardWithName> kickboardsName = recommendService.assignKickboardName(kickboards);
+        List<ClusterWithName> clustersName = recommendService.assignClusterName(clusters);
 
         return new NamespaceResponseDto(kickboardsName, clustersName);
     }

@@ -4,7 +4,6 @@ package org.hellokicktty.server.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.hellokicktty.server.domain.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -28,25 +27,12 @@ public class RecommendService {
 
     // == utils ==
 
-    public List<ClusterWithName> assignName(List<Cluster> clusters) {
+    public List<KickboardWithName> assignKickboardName(List<Kickboard> kickboards) {
 
-        List<ClusterWithName> clustersWithName = new ArrayList<>();
-
-        for (Cluster cluster : clusters) {
-            ClusterWithName c = new ClusterWithName(cluster);
-            String doroName = getDoroName(cluster.getCenter().getLat(), c.getCenter().getLng());
-            c.setName(doroName);
-            clustersWithName.add(c);
-        }
-        return clustersWithName;
-    }
-
-    public List<KickboardName> assignKickboardName(List<Kickboard> kickboards) {
-
-        List<KickboardName> kickboardsName = new ArrayList<>();
+        List<KickboardWithName> kickboardsName = new ArrayList<>();
 
         for (Kickboard kickboard : kickboards) {
-            KickboardName k = new KickboardName(kickboard);
+            KickboardWithName k = new KickboardWithName(kickboard);
             String doroName = getDoroName(k.getCenter().getLat(), k.getCenter().getLng());
             k.setName(doroName);
             kickboardsName.add(k);
@@ -54,12 +40,12 @@ public class RecommendService {
         return kickboardsName;
     }
 
-    public List<ClusterName> assignClusterName(List<Cluster> clusters) {
+    public List<ClusterWithName> assignClusterName(List<Cluster> clusters) {
 
-        List<ClusterName> clustersWithName = new ArrayList<>();
+        List<ClusterWithName> clustersWithName = new ArrayList<>();
 
         for (Cluster cluster : clusters) {
-            ClusterName c = new ClusterName(cluster);
+            ClusterWithName c = new ClusterWithName(cluster);
             String doroName = getDoroName(c.getCenter().getLat(), c.getCenter().getLng());
             c.setName(doroName);
             clustersWithName.add(c);
@@ -91,7 +77,7 @@ public class RecommendService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-        String keyword = extractResponse(keywordsResponse, "place_name");
+        String keyword = parseAddress(keywordsResponse, "place_name");
 
         if (keyword != null && keyword != "") return keyword;
 
@@ -109,7 +95,7 @@ public class RecommendService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-        String category = extractResponse(categoryResponse, "place_name");
+        String category = parseAddress(categoryResponse, "place_name");
 
         if (category != null && category != "") return category;
 
@@ -125,14 +111,14 @@ public class RecommendService {
                 .bodyToMono(String.class)
                 .block();
 
-        String address = extractResponse(addressResponse, "road_address");
+        String address = parseAddress(addressResponse, "road_address");
         if (address != null && address != "") return address;
 
 
         return "sorry it's error";
     }
 
-    public static String extractResponse(String response, String target) {
+    public static String parseAddress(String response, String target) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(response);

@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class KickboardName {
+public class KickboardWithName {
     Long id;
     Coordinate center;
     String name;
 
-    public KickboardName(Kickboard kickboard) {
+    public KickboardWithName(Kickboard kickboard) {
         this.id = kickboard.getId();
         this.center = new Coordinate(kickboard.getLat(), kickboard.getLng());
         this.name = "";
