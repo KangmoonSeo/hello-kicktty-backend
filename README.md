@@ -1,4 +1,4 @@
-# hello-kicktty-web-server
+# hello-kicktty-BE
 
 > 팀 헬로킥티
 
